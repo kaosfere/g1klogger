@@ -16,7 +16,7 @@ class FormatBase(ABC):
         pass
 
 
-class G1000(ABC):
+class G1000(FormatBase):
     def __init__(self):
         self.col_config = (
             ("Lcl Date", "local_date", "#yyy-mm-dd", 10),
@@ -112,7 +112,7 @@ class G1000(ABC):
         return ", ".join(output)
 
 
-class Simple(ABC):
+class Simple(FormatBase):
     def __init__(self):
         self._columns = (
             "local_date",
@@ -141,7 +141,7 @@ class Simple(ABC):
         return ",".join(props)
 
 
-class SimpleDict(ABC):
+class SimpleDict(FormatBase):
     def __init__(self):
         self._columns = (
             "local_date",
