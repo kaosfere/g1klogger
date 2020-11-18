@@ -1,6 +1,7 @@
 import msgpack
 from abc import ABC, abstractproperty, abstractmethod
 
+
 class FormatBase(ABC):
     @abstractproperty
     def proplist(self):
@@ -13,7 +14,8 @@ class FormatBase(ABC):
     @abstractmethod
     def parse(self, msg):
         pass
-    
+
+
 class G1000(ABC):
     def __init__(self):
         self.col_config = (
@@ -60,7 +62,7 @@ class G1000(ABC):
             ("RollM", "roll_mode", "enum", 5),
             ("PitchM", "pitch_mode", "enum", 6),
             ("RollC", "ap_roll_cmd", "deg", 5, self._1f),
-            ("PitchC", "ap_pitch_cmd", "deg", 6, self._1f)
+            ("PitchC", "ap_pitch_cmd", "deg", 6, self._1f),
         )
 
     @property
@@ -107,11 +109,20 @@ class G1000(ABC):
                 print(f"Skipping message due to error in {field} (={msg[field]})")
                 return None
 
-        return(", ".join(output))
+        return ", ".join(output)
+
 
 class Simple(ABC):
     def __init__(self):
-        self._columns = ("local_date", "local_time", "utc_offset", "lat", "lon", "alt_msl", "ias")
+        self._columns = (
+            "local_date",
+            "local_time",
+            "utc_offset",
+            "lat",
+            "lon",
+            "alt_msl",
+            "ias",
+        )
 
     @property
     def proplist(self):
@@ -129,9 +140,18 @@ class Simple(ABC):
                 props.append(str(msg[prop]))
         return ",".join(props)
 
+
 class SimpleDict(ABC):
     def __init__(self):
-        self._columns = ("local_date", "local_time", "utc_offset", "lat", "lon", "alt_msl", "ias")
+        self._columns = (
+            "local_date",
+            "local_time",
+            "utc_offset",
+            "lat",
+            "lon",
+            "alt_msl",
+            "ias",
+        )
 
     @property
     def proplist(self):
@@ -148,4 +168,3 @@ class SimpleDict(ABC):
             if prop in self.proplist:
                 out[prop] = msg[prop]
         return out
-        

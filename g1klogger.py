@@ -1,8 +1,5 @@
 import argparse
-import sys
-import time
-import msgpack
-import json
+
 import simdata
 import simdata.formats
 
@@ -35,6 +32,7 @@ def main():
             out_raw.write(msg)
         if args.g1000:
             out_g1000.write(g1000.parse(msg))
+
 
 if __name__ == "__main__":
     main()
