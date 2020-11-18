@@ -31,7 +31,7 @@ def main():
         if args.raw:
             out_raw.write(msg)
         if args.g1000:
-            out_g1000.write(g1000.parse(msg))
+            out_g1000.write(f"{g1000.parse(msg)}\n")
 
 
 if __name__ == "__main__":
