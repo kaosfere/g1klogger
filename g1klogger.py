@@ -1,43 +1,40 @@
 import argparse
 import sys
 import time
-
+import msgpack
+import json
 import simdata
+import simdata.formats
 
 
 def parse_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--outfile", action="store")
+    parser.add_argument("--raw", action="store")
+    parser.add_argument("--g1000", action="store")
     return parser.parse_args()
 
 
 def main():
     args = parse_args()
-    if args.outfile:
-        handle = open(args.outfile, "w")
-    else:
-        handle = sys.stdout
+    if args.raw:
+        out_raw = open(args.raw, "wb")
 
-    conn = simdata.Connection(0)
+    if args.g1000:
+        out_g1000 = open(args.g1000, "w")
 
-    handle.write(
-        '#airframe_info, log_version="1.00", airframe_name="Beechcraft A36/G36", unit_software_part_number="006-B0319-9C", unit_software_version="11.12", system_software_part_number="006-B0858-08", system_id="", mode=NORMAL,\n'
-    )
-    handle.write(", ".join([x.unit.rjust(x.width) for x in conn.variables]) + "\n")
-    handle.write(", ".join([x.name.rjust(x.width) for x in conn.variables]) + "\n")
-    while True:
-        last = time.time()
-        try:
-            handle.write(
-                ", ".join([x.value.rjust(x.width) for x in conn.variables]) + "\n"
-            )
-        except (TypeError, AttributeError):
-            pass
-        duration = time.time() - last
-        if duration < 1:
-            sleeptime = 1 - duration
-            time.sleep(sleeptime)
+    g1000 = simdata.formats.G1000()
+    status = simdata.formats.SimpleDict()
 
+    if args.g1000:
+        out_g1000.write(f"{g1000.header}\n")
+
+    dumper = simdata.Dumper()
+    for msg in dumper.dumper(proplist=g1000.proplist):
+        print(status.parse(msg))
+        if args.raw:
+            out_raw.write(msg)
+        if args.g1000:
+            out_g1000.write(g1000.parse(msg))
 
 if __name__ == "__main__":
     main()

@@ -1,3 +1,3 @@
-from .connection import Connection
+from .reader import Reader, Dumper
 
-__all__ = ["Connection"]
+__all__ = ["Reader", "Dumper"]
